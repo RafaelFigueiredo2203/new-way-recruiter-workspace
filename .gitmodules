@@ -1,0 +1,6 @@
+[submodule "new-way-recruiter-api"]
+	path = new-way-recruiter-api
+	url = git@github.com:isabellasantiago/new-way-recruiter-api.git
+[submodule "new-way-recruiter-web"]
+	path = new-way-recruiter-web
+	url = git@github.com:isabellasantiago/new-way-recruiter-web.git

@@ -1,0 +1,71 @@
+version: "3"
+
+services:
+
+  new-way-recruiter-api:
+    image: node:${NODE_VERSION}
+    networks:
+      - new_way_recruiter_network
+    depends_on: 
+      - db
+    ports:
+      - 3333:${NODE_PORT}
+    command: yarn dev
+    working_dir: ${WORKING_DIR}
+    volumes:
+      - ./new-way-recruiter-api:/app
+    env_file: ./new-way-recruiter-api/.env
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: newwayrec
+      # MYSQL_USER: root
+      MYSQL_PASSWORD: 123
+
+  new-way-recruiter-web:
+    image: node:${NODE_VERSION}
+    networks:
+      - new_way_recruiter_network
+    ports:
+      - 3000:3000
+    depends_on:
+      - new-way-recruiter-api
+    command: yarn start
+    working_dir: ${WORKING_DIR}
+    stdin_open: true
+    volumes:
+      - ./new-way-recruiter-web:${WORKING_DIR}
+    
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8181:80
+    networks:
+      - new_way_recruiter_network
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: "root"
+  
+  db:
+    image: mysql
+    networks:
+      - new_way_recruiter_network
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqlDb:/var/lib/mysql
+    cap_add:
+      - SYS_NICE
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: newwayrec
+
+networks:
+  new_way_recruiter_network:
+
+volumes:
+  mysqlDb:
